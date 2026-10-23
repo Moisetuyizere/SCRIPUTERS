@@ -1,2 +1,1 @@
-# SCRIPUTERS
-GOD is above
+path to salvation 
