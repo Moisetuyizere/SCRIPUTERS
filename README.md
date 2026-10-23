@@ -1,1 +1,1 @@
-path to salvation 
+path-to-salvation 
