@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCRIPTURES, EGW WRITINGS & BIBLE STUDY PORTAL</title>
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    :root {
+      --primary: #1e3d59;
+      --secondary: #17b978;
+      --accent: #ff6e40;
+      --purple: #8e44ad;
+      --gold: #d4af37;
+      --dark: #111e2e;
+      --bg: #f5f7fa;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
+
+    /* Main Navigation Header */
+    header {
+      background: linear-gradient(135deg, var(--dark), var(--primary));
+      color: white;
+      padding: 1.2rem 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .logo-group h1 { font-size: 1.5rem; letter-spacing: 0.5px; color: #ffffff; }
+    .logo-group p { font-size: 0.8rem; color: #a0aec0; }
+    
+    nav { display: flex; gap: 6px; flex-wrap: wrap; }
+    nav button {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.25s ease;
+    }
+    nav button:hover, nav button.active {
+      background: var(--secondary);
+      color: white;
+      border-color: var(--secondary);
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(23, 185, 120, 0.4);
+    }
+
+    .container { max-width: 1100px; margin: 25px auto; padding: 0 15px; }
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.35s ease-in-out; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Common Card Styling */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+    .card h2 { color: var(--primary); margin-bottom: 8px; font-size: 1.35rem; }
+    .card p.subtitle { color: #64748b; font-size: 0.88rem; margin-bottom: 18px; }
+
+    /* Form Controls & Buttons */
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.88rem; color: var(--primary); }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--secondary); }
+    
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: background 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-secondary { background: var(--secondary); }
+    .btn-accent { background: var(--accent); }
+    .btn-danger { background: var(--danger); }
+
+    /* Page 1: Main Feed & Auto Timer Banner */
+    .timer-banner {
+      background: linear-gradient(135deg, var(--primary), #2c5282);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .timer-badge { font-family: monospace; font-size: 1.1rem; font-weight: 700; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; }
+
+    .stories-bar { display: flex; gap: 12px; overflow-x: auto; padding: 12px 0; margin-bottom: 20px; }
+    .story-card {
+      min-width: 90px; height: 120px; border-radius: 10px; background: #edf2f7;
+      display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+      padding: 8px; cursor: pointer; text-align: center; font-size: 0.75rem; border: 2px solid var(--secondary);
+    }
+    .story-card.add-story { border: 2px dashed var(--secondary); justify-content: center; color: var(--secondary); }
+
+    .verse-box { background: #f8fafc; border-left: 4px solid var(--secondary); padding: 12px 16px; margin: 12px 0; font-style: italic; color: #334155; }
+    .post-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 12px; border-top: 1px solid #edf2f7; }
+    .like-btn, .share-btn { border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 0.82rem; font-weight: 600; }
+    .like-btn.liked { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* Page 2: Bible Reader */
+    .bible-controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .bible-controls select { padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.9rem; flex: 1; }
+    .scripture-text-area { line-height: 1.8; font-size: 1.05rem; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+
+    /* Page 3: EGW Books Library */
+    .egw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 15px; }
+    .egw-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+    .egw-card h3 { color: var(--primary); font-size: 1.1rem; margin-bottom: 6px; }
+    .egw-card p { font-size: 0.85rem; color: #4a5568; margin-bottom: 12px; line-height: 1.5; }
+
+    /* Page 4: Parallel Study */
+    .parallel-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .parallel-container { grid-template-columns: 1fr; } }
+    .parallel-pane { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 15px; }
+
+    /* Page 5: Search Engine */
+    .search-bar-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .search-bar-group input { flex: 1; }
+
+    /* Page 6: Daily Devotions */
+    .devotional-card { background: linear-gradient(135deg, #ffffff, #f7fafc); border-left: 6px solid var(--gold); }
+
+    /* Page 7: Reading Plans */
+    .progress-bar { height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+    .progress-fill { height: 100%; background: var(--secondary); width: 45%; }
+
+    /* Page 8: Prayer Wall */
+    .prayer-item { background: #fff5f5; border-left: 4px solid var(--accent); padding: 14px; margin-bottom: 12px; border-radius: 0 8px 8px 0; }
+
+    /* Page 9: Direct Chat */
+    .chat-layout { display: flex; height: 480px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: white; }
+    .chat-sidebar { width: 30%; border-right: 1px solid var(--border); background: #f7fafc; overflow-y: auto; }
+    .chat-user-item { padding: 12px; border-bottom: 1px solid #edf2f7; cursor: pointer; }
+    .chat-user-item.active { background: #ebf8ff; font-weight: 600; }
+    .chat-main { width: 70%; display: flex; flex-direction: column; justify-content: space-between; }
+    .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .chat-bubble { max-width: 70%; padding: 8px 12px; border-radius: 10px; font-size: 0.88rem; }
+    .chat-bubble.sent { align-self: flex-end; background: var(--primary); color: white; }
+    .chat-bubble.received { align-self: flex-start; background: #edf2f7; color: #2d3748; }
+
+    /* Page 10: Admin & Profiles */
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 15px; }
+    .profile-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; }
+    .badge { background: var(--secondary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; }
+    .badge.admin { background: var(--purple); }
+
+    /* Modals & Toast */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; }
+    .modal-content { background: white; padding: 25px; border-radius: 10px; max-width: 440px; width: 90%; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: white; padding: 12px 20px; border-radius: 25px; display: none; z-index: 3000; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Action completed!</div>
+
+  <!-- Header & Navigation Bar -->
+  <header>
+    <div class="header-content">
+      <div class="logo-group">
+        <h1>SCRIPTURES & EGW WRITINGS</h1>
+        <p>Bible Reader, Ellen G. White Library & Faith Community Portal</p>
+      </div>
+      <nav>
+        <button onclick="showPage('feedPage')" id="navFeed" class="active">1. Community Feed</button>
+        <button onclick="showPage('biblePage')" id="navBible">2. Bible Reader</button>
+        <button onclick="showPage('egwPage')" id="navEgw">3. EGW Writings</button>
+        <button onclick="showPage('parallelPage')" id="navParallel">4. Parallel Study</button>
+        <button onclick="showPage('searchPage')" id="navSearch">5. Search Engine</button>
+        <button onclick="showPage('devotionalPage')" id="navDevotional">6. Daily Devotions</button>
+        <button onclick="showPage('planPage')" id="navPlan">7. Reading Plans</button>
+        <button onclick="showPage('prayerPage')" id="navPrayer">8. Prayer Wall</button>
+        <button onclick="showPage('chatPage')" id="navChat">9. Member Chat 💬</button>
+        <button onclick="showPage('profilesPage')" id="navProfiles">10. Profiles & Admin</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- WEBPAGE 1: COMMUNITY FEED & AUTOMATED VERSES -->
+    <div id="feedPage" class="page active">
+      <div class="timer-banner">
+        <div>
+          <strong>📖 Auto-Scripture Engine Active</strong>
+          <p style="font-size: 0.8rem; opacity: 0.9;">Automatically posts new Bible verses & EGW notes every 2 hours continuously.</p>
+        </div>
+        <div>
+          <span style="font-size: 0.75rem; opacity: 0.85;">Next Verse In:</span>
+          <div class="timer-badge" id="countdownTimer">02:00:00</div>
+        </div>
+      </div>
+
+      <div class="stories-bar" id="storiesContainer">
+        <div class="story-card add-story" onclick="openStoryModal()">
+          <strong style="font-size: 1.5rem;">+</strong>
+          <span>Add Story</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Faith & Reflection Community Feed</h2>
+        <p class="subtitle">Shared Bible verses, Spirit of Prophecy quotes, and community notes.</p>
+        <button class="btn btn-secondary" onclick="openPostModal()" style="margin-bottom: 15px;">+ Publish New Reflection / Image Post</button>
+        <div id="postsFeed"></div>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 2: BIBLE READER -->
+    <div id="biblePage" class="page">
+      <div class="card">
+        <h2>Interactive Holy Bible Reader</h2>
+        <p class="subtitle">Read chapters across the Old and New Testaments.</p>
+        <div class="bible-controls">
+          <select id="bibleBookSelect" onchange="loadBibleChapter()"></select>
+          <select id="bibleChapterSelect" onchange="loadBibleChapter()"></select>
+        </div>
+        <div class="scripture-text-area" id="bibleChapterContent">Select a book and chapter above to read.</div>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 3: ELLEN G. WHITE WRITINGS LIBRARY -->
+    <div id="egwPage" class="page">
+      <div class="card">
+        <h2>Ellen G. White Writings & Books Library</h2>
+        <p class="subtitle">Access classic Spirit of Prophecy volumes and chapter reflections.</p>
+        <div class="egw-grid" id="egwLibraryGrid"></div>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 4: PARALLEL BIBLE & EGW STUDY -->
+    <div id="parallelPage" class="page">
+      <div class="card">
+        <h2>Parallel Study: Bible & Spirit of Prophecy Commentary</h2>
+        <p class="subtitle">Compare Holy Scripture alongside Ellen G. White's commentary side-by-side.</p>
+        <div class="parallel-container">
+          <div class="parallel-pane">
+            <h3 style="color:var(--primary); margin-bottom:10px;">📖 Bible Scripture</h3>
+            <div id="parallelBibleText" class="verse-box">"In the beginning God created the heaven and the earth." - Genesis 1:1</div>
+          </div>
+          <div class="parallel-pane">
+            <h3 style="color:var(--purple); margin-bottom:10px;">✍️ EGW Commentary (Patriarchs and Prophets)</h3>
+            <div id="parallelEgwText" style="line-height:1.6; font-size:0.92rem;">"The sovereign of the universe was not alone in His work of beneficence. With Him was a associate who could appreciate His purposes..."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 5: ADVANCED BIBLE & EGW SEARCH ENGINE -->
+    <div id="searchPage" class="page">
+      <div class="card">
+        <h2>Concordance & Key Word Search Engine</h2>
+        <p class="subtitle">Search keywords across both the Bible and Ellen G. White writings.</p>
+        <div class="search-bar-group">
+          <input type="text" id="searchInput" placeholder="Enter keyword (e.g., faith, prayer, sanctuary, grace)..." class="form-group" style="margin:0;">
+          <button class="btn" onclick="executeSearch()">Search Corpus</button>
+        </div>
+        <div id="searchResults" style="margin-top: 15px;"></div>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 6: DAILY DEVOTIONAL & MORNING WATCH -->
+    <div id="devotionalPage" class="page">
+      <div class="card devotional-card">
+        <h2>Daily Devotional & Morning Watch</h2>
+        <p class="subtitle">Today's spiritual encouragement and Ellen G. White devotional reading.</p>
+        <div class="verse-box" id="devotionalVerse">"The Lord is my strength and my shield; my heart trusted in him, and I am helped." - Psalm 28:7</div>
+        <h3 style="margin-top:15px; color:var(--primary);">Spirit of Prophecy Meditation</h3>
+        <p style="line-height:1.7; margin-top:8px;" id="devotionalText">"Prayer is the opening of the heart to God as to a friend. Not that it is necessary in order to make known to God what we are, but in order to enable us to receive Him. Prayer does not bring God down to us, but brings us up to Him." — <em>Steps to Christ, p. 93</em></p>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 7: BIBLE & EGW READING PLANS -->
+    <div id="planPage" class="page">
+      <div class="card">
+        <h2>Structured Bible & Book Reading Plans</h2>
+        <p class="subtitle">Track your annual progress through the Conflict of the Ages series and the Bible.</p>
+        
+        <div style="margin-bottom: 20px;">
+          <h3>Conflict of the Ages 1-Year Plan</h3>
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+          <small style="color:#64748b;">Progress: Day 42 of 365 (11.5% Completed)</small>
+        </div>
+
+        <ul style="list-style-type: none; padding: 0;">
+          <li style="padding:10px; border-bottom:1px solid #edf2f7; display:flex; justify-content:space-between; align-items:center;">
+            <span>Day 42: <em>Patriarchs and Prophets</em> - Chapters 8-10</span>
+            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;">Mark Completed</button>
+          </li>
+          <li style="padding:10px; border-bottom:1px solid #edf2f7; display:flex; justify-content:space-between; align-items:center;">
+            <span>Day 43: <em>Patriarchs and Prophets</em> - Chapters 11-13</span>
+            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;">Start Reading</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 8: PRAYER REQUEST WALL -->
+    <div id="prayerPage" class="page">
+      <div class="card">
+        <h2>Community Prayer Request Wall</h2>
+        <p class="subtitle">Submit prayer intentions and intercede for brothers and sisters.</p>
+        <form onsubmit="submitPrayer(event)" style="margin-bottom: 20px;">
+          <div class="form-group">
+            <textarea id="prayerInput" rows="3" placeholder="Share your prayer request..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-accent">Post Prayer Request</button>
+        </form>
+
+        <div id="prayerList"></div>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 9: MEMBER DIRECT CHAT -->
+    <div id="chatPage" class="page">
+      <div class="card" style="padding:15px;">
+        <h2>Member Direct Messaging 💬</h2>
+        <p class="subtitle">Chat privately with other community members in real time.</p>
+        <div class="chat-layout">
+          <div class="chat-sidebar" id="chatUserList"></div>
+          <div class="chat-main">
+            <div style="padding:10px; background:var(--primary); color:white; font-weight:600;" id="chatHeaderTitle">Select a member to chat</div>
+            <div class="chat-messages" id="chatMessagesArea"></div>
+            <form onsubmit="sendChatMessage(event)" style="display:flex; padding:10px; gap:8px; border-top:1px solid var(--border);">
+              <input type="text" id="chatInputText" placeholder="Type message..." style="flex:1; padding:8px; border-radius:20px; border:1px solid #ccc;" disabled>
+              <button type="submit" class="btn" id="chatSendBtn" disabled>Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEBPAGE 10: USER PROFILES & ADMIN DASHBOARD -->
+    <div id="profilesPage" class="page">
+      <div class="card">
+        <h2>Community Member Profiles & Admin Management</h2>
+        <p class="subtitle">Registered members directory and account management.</p>
+        <div class="profile-grid" id="allProfilesGrid"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL: Post Creation -->
+  <div class="modal" id="postModal">
+    <div class="modal-content">
+      <h3>Publish Scripture / EGW Post</h3>
+      <form onsubmit="createPost(event)">
+        <div class="form-group" style="margin-top:10px;">
+          <label>Reference / Book</label>
+          <input type="text" id="postRef" placeholder="e.g., Steps to Christ, Ch. 2" required>
+        </div>
+        <div class="form-group">
+          <label>Quote / Passage Text</label>
+          <textarea id="postText" rows="2" placeholder="Enter text..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Reflection Notes</label>
+          <textarea id="postReflection" rows="2" placeholder="Your reflection..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-secondary" style="width:100%;">Publish</button>
+        <button type="button" class="btn btn-danger" onclick="closePostModal()" style="width:100%; margin-top:6px;">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Story Creation -->
+  <div class="modal" id="storyModal">
+    <div class="modal-content">
+      <h3>Add a 24-Hour Story</h3>
+      <div class="form-group" style="margin-top:10px;">
+        <textarea id="storyText" rows="3" placeholder="Share daily inspiration..." required></textarea>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;" onclick="saveStory()">Post Story</button>
+      <button class="btn btn-danger" style="width:100%; margin-top:6px;" onclick="closeStoryModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // DATA & PRESETS
+    const BIBLE_BOOKS = ["Genesis", "Exodus", "Psalms", "Proverbs", "Isaiah", "Matthew", "John", "Romans", "Revelation"];
+    
+    const EGW_BOOKS_DATA = [
+      { title: "Steps to Christ", desc: "A guide on how to form a personal, saving relationship with Jesus Christ.", chapters: 13 },
+      { title: "The Desire of Ages", desc: "A detailed exposition on the life and ministry of Jesus Christ.", chapters: 87 },
+      { title: "The Great Controversy", desc: "Traces the conflict between Christ and Satan through church history to the end.", chapters: 42 },
+      { title: "Patriarchs and Prophets", desc: "Covers human creation, fall, and the patriarchs up to King David.", chapters: 73 },
+      { title: "Prophets and Kings", desc: "Covers the history of Israel from King Solomon to the exile and restoration.", chapters: 60 },
+      { title: "The Acts of the Apostles", desc: "Examines the early Christian church, the apostles, and Paul's journeys.", chapters: 58 }
+    ];
+
+    const AUTOMATED_VERSES = [
+      { ref: "Philippians 4:13", text: "I can do all this through him who gives me strength.", reflection: "Draw your inner strength daily from God." },
+      { ref: "Steps to Christ, p. 48", text: "God does not require us to conquer in our own strength. He asks us to yield our will to Him.", reflection: "Surrender control to divine leadership." },
+      { ref: "Jeremiah 29:11", text: "For I know the plans I have for you, declares the LORD.", reflection: "God's intentions are filled with hope and good design." },
+      { ref: "The Desire of Ages, p. 25", text: "His life was one of unselfish service. In every act He revealed the love of God.", reflection: "Emulate Christ's selfless love in daily interactions." }
+    ];
+
+    let currentUser = { id: 1, name: 'Tuyizere Moise', username: 'moise.tu', role: 'admin' };
+    let users = [
+      { id: 1, name: 'Tuyizere Moise', username: 'moise.tu', role: 'admin' },
+      { id: 2, name: 'Esther Mukamana', username: 'esther.m', role: 'user' }
+    ];
+
+    let posts = JSON.parse(localStorage.getItem('posts')) || [
+      { id: 1, ref: 'Proverbs 3:5-6', text: 'Trust in the LORD with all your heart.', reflection: 'Lean on divine wisdom daily.', author: 'Tuyizere Moise', timestamp: Date.now() - 3600000, likes: [] }
+    ];
+
+    let prayers = JSON.parse(localStorage.getItem('prayers')) || [
+      { id: 1, text: "Please pray for strength and wisdom during university exams.", author: "Esther Mukamana", count: 3 }
+    ];
+
+    let stories = JSON.parse(localStorage.getItem('stories')) || [];
+    let chatMessages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+    let activeChatUser = null;
+
+    let lastAutoPostTime = localStorage.getItem('lastAutoPostTime') ? parseInt(localStorage.getItem('lastAutoPostTime')) : 0;
+    let autoIndex = localStorage.getItem('autoIndex') ? parseInt(localStorage.getItem('autoIndex')) : 0;
+    const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+
+    function init() {
+      setupBibleReaderOptions();
+      renderEgwLibrary();
+      checkAutoPost();
+      renderFeed();
+      renderPrayers();
+      renderAllProfiles();
+      renderChatUserSidebar();
+
+      setInterval(() => {
+        checkAutoPost();
+        updateCountdown();
+      }, 1000);
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      
+      const navMap = {
+        'feedPage': 'navFeed', 'biblePage': 'navBible', 'egwPage': 'navEgw',
+        'parallelPage': 'navParallel', 'searchPage': 'navSearch', 'devotionalPage': 'navDevotional',
+        'planPage': 'navPlan', 'prayerPage': 'navPrayer', 'chatPage': 'navChat', 'profilesPage': 'navProfiles'
+      };
+      if (navMap[pageId]) document.getElementById(navMap[pageId]).classList.add('active');
+    }
+
+    /* Page 1: Feed & Auto Engine */
+    function checkAutoPost() {
+      const now = Date.now();
+      if (!lastAutoPostTime || (now - lastAutoPostTime >= TWO_HOURS_MS)) {
+        const item = AUTOMATED_VERSES[autoIndex % AUTOMATED_VERSES.length];
+        posts.unshift({
+          id: Date.now(),
+          ref: item.ref,
+          text: item.text,
+          reflection: item.reflection,
+          author: 'Auto Scripture Bot 📖',
+          timestamp: Date.now(),
+          likes: [],
+          isAuto: true
+        });
+        lastAutoPostTime = Date.now();
+        autoIndex = (autoIndex + 1) % AUTOMATED_VERSES.length;
+        localStorage.setItem('posts', JSON.stringify(posts));
+        localStorage.setItem('lastAutoPostTime', lastAutoPostTime.toString());
+        localStorage.setItem('autoIndex', autoIndex.toString());
+        renderFeed();
+      }
+    }
+
+    function updateCountdown() {
+      const diff = (lastAutoPostTime + TWO_HOURS_MS) - Date.now();
+      const val = diff > 0 ? Math.floor(diff/1000) : 0;
+      const h = String(Math.floor(val / 3600)).padStart(2, '0');
+      const m = String(Math.floor((val % 3600) / 60)).padStart(2, '0');
+      const s = String(val % 60).padStart(2, '0');
+      document.getElementById('countdownTimer').innerText = `${h}:${m}:${s}`;
+    }
+
+    function renderFeed() {
+      const area = document.getElementById('postsFeed');
+      area.innerHTML = '';
+      posts.forEach(p => {
+        area.innerHTML += `
+          <div class="card" style="margin-top:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3>${p.ref}</h3>
+              <span class="badge ${p.isAuto ? '' : 'admin'}">${p.isAuto ? '⏱️ Auto 2h' : p.author}</span>
+            </div>
+            <div class="verse-box">"${p.text}"</div>
+            <p style="font-size:0.9rem; color:#4a5568;"><strong>Reflection:</strong> ${p.reflection}</p>
+          </div>
+        `;
+      });
+    }
+
+    /* Page 2: Bible Reader */
+    function setupBibleReaderOptions() {
+      const bSelect = document.getElementById('bibleBookSelect');
+      const cSelect = document.getElementById('bibleChapterSelect');
+      BIBLE_BOOKS.forEach(b => bSelect.innerHTML += `<option value="${b}">${b}</option>`);
+      for (let i = 1; i <= 10; i++) cSelect.innerHTML += `<option value="${i}">Chapter ${i}</option>`;
+      loadBibleChapter();
+    }
+
+    function loadBibleChapter() {
+      const book = document.getElementById('bibleBookSelect').value;
+      const chapter = document.getElementById('bibleChapterSelect').value;
+      document.getElementById('bibleChapterContent').innerHTML = `
+        <h3 style="color:var(--primary); margin-bottom:10px;">${book} ${chapter} (KJV)</h3>
+        <p><strong>1</strong> In the beginning God created the heaven and the earth.</p>
+        <p><strong>2</strong> And the earth was without form, and void; and darkness was upon the face of the deep.</p>
+        <p><strong>3</strong> And God said, Let there be light: and there was light.</p>
+      `;
+    }
+
+    /* Page 3: EGW Books */
+    function renderEgwLibrary() {
+      const grid = document.getElementById('egwLibraryGrid');
+      grid.innerHTML = '';
+      EGW_BOOKS_DATA.forEach(b => {
+        grid.innerHTML += `
+          <div class="egw-card">
+            <div>
+              <h3>${b.title}</h3>
+              <p>${b.desc}</p>
+              <small style="color:#718096;">${b.chapters} Chapters Available</small>
+            </div>
+            <button class="btn btn-secondary" style="margin-top:12px; width:100%;" onclick="alert('Opening ${b.title} reading mode...')">Open Book Reader</button>
+          </div>
+        `;
+      });
+    }
+
+    /* Page 5: Search Engine */
+    function executeSearch() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const area = document.getElementById('searchResults');
+      if (!q) { area.innerHTML = '<p style="color:#718096;">Please enter a search term.</p>'; return; }
+      
+      area.innerHTML = `
+        <h3 style="color:var(--primary); margin-bottom:10px;">Search Results for "${q}"</h3>
+        <div class="verse-box"><strong>Bible (Psalm 27:1):</strong> The LORD is my light and my salvation; whom shall I fear?</div>
+        <div class="verse-box" style="border-left-color:var(--purple);"><strong>EGW (Steps to Christ, p. 93):</strong> Prayer is the key in the hand of <em>faith</em> to unlock heaven's storehouse.</div>
+      `;
+    }
+
+    /* Page 8: Prayer Requests */
+    function submitPrayer(e) {
+      e.preventDefault();
+      const txt = document.getElementById('prayerInput').value;
+      prayers.unshift({ id: Date.now(), text: txt, author: currentUser.name, count: 1 });
+      localStorage.setItem('prayers', JSON.stringify(prayers));
+      document.getElementById('prayerInput').value = '';
+      renderPrayers();
+    }
+
+    function renderPrayers() {
+      const area = document.getElementById('prayerList');
+      area.innerHTML = '';
+      prayers.forEach(p => {
+        area.innerHTML += `
+          <div class="prayer-item">
+            <p>"${p.text}"</p>
+            <small style="color:#718096; display:block; margin-top:5px;">Requested by ${p.author} • 🙏 ${p.count} Praying</small>
+          </div>
+        `;
+      });
+    }
+
+    /* Page 9: Chat */
+    function renderChatUserSidebar() {
+      const sidebar = document.getElementById('chatUserList');
+      sidebar.innerHTML = '';
+      users.filter(u => u.id !== currentUser.id).forEach(u => {
+        sidebar.innerHTML += `
+          <div class="chat-user-item ${activeChatUser && activeChatUser.id === u.id ? 'active' : ''}" onclick="selectChatUser(${u.id})">
+            <strong>${u.name}</strong><br>
+            <small style="color:#718096;">@${u.username}</small>
+          </div>
+        `;
+      });
+    }
+
+    function selectChatUser(id) {
+      activeChatUser = users.find(u => u.id === id);
+      renderChatUserSidebar();
+      document.getElementById('chatHeaderTitle').innerText = `Chatting with ${activeChatUser.name}`;
+      document.getElementById('chatInputText').disabled = false;
+      document.getElementById('chatSendBtn').disabled = false;
+    }
+
+    function sendChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInputText');
+      chatMessages.push({ id: Date.now(), senderId: currentUser.id, text: input.value });
+      input.value = '';
+      renderChatMessages();
+    }
+
+    function renderChatMessages() {
+      const area = document.getElementById('chatMessagesArea');
+      area.innerHTML = '';
+      chatMessages.forEach(m => {
+        area.innerHTML += `<div class="chat-bubble ${m.senderId === currentUser.id ? 'sent' : 'received'}">${m.text}</div>`;
+      });
+    }
+
+    /* Page 10: Profiles */
+    function renderAllProfiles() {
+      const grid = document.getElementById('allProfilesGrid');
+      grid.innerHTML = '';
+      users.forEach(u => {
+        grid.innerHTML += `
+          <div class="profile-card">
+            <h4>${u.name}</h4>
+            <p style="font-size:0.8rem; color:#718096;">@${u.username}</p>
+            <span class="badge ${u.role === 'admin' ? 'admin' : ''}">${u.role}</span>
+          </div>
+        `;
+      });
+    }
+
+    function openPostModal() { document.getElementById('postModal').style.display = 'flex'; }
+    function closePostModal() { document.getElementById('postModal').style.display = 'none'; }
+    function openStoryModal() { document.getElementById('storyModal').style.display = 'flex'; }
+    function closeStoryModal() { document.getElementById('storyModal').style.display = 'none'; }
+
+    function createPost(e) {
+      e.preventDefault();
+      posts.unshift({
+        id: Date.now(),
+        ref: document.getElementById('postRef').value,
+        text: document.getElementById('postText').value,
+        reflection: document.getElementById('postReflection').value,
+        author: currentUser.name,
+        timestamp: Date.now(),
+        likes: []
+      });
+      localStorage.setItem('posts', JSON.stringify(posts));
+      closePostModal();
+      renderFeed();
+    }
+
+    init();
+  </script>
+</body>
+</html>
