@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moise.com - Premium Music & Video Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0f9ff', 500: '#0284c7', 600: '#0284c7', 700: '#0369a1', 900: '#0c4a6e' }
+          }
+        }
+      }
+    };
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans pb-36">
+
+  <!-- TOP HEADER / NAV -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('feed')">
+        <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 p-2 rounded-xl text-white shadow-lg shadow-cyan-500/30">
+          <i class="fa-solid font-bold fa-music text-xl"></i>
+        </div>
+        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Moise.com</span>
+      </div>
+
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+        <button onclick="switchTab('feed')" class="hover:text-cyan-400 transition">Explore Feed</button>
+        <button onclick="switchTab('links')" class="hover:text-cyan-400 transition">External Links</button>
+        <button id="nav-favs" onclick="switchTab('favorites')" class="hidden hover:text-cyan-400 transition flex items-center gap-1">
+          <i class="fa-solid fa-heart text-rose-500"></i> My Liked Tracks
+        </button>
+        <button id="nav-admin" onclick="switchTab('admin')" class="hidden text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1.5 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/30">
+          <i class="fa-solid fa-shield-halved"></i> Admin Console
+        </button>
+      </nav>
+
+      <div class="flex items-center space-x-3" id="auth-nav-container">
+        <!-- Dynamic Auth Buttons -->
+      </div>
+    </div>
+  </header>
+
+  <!-- BANNER ADVERTISEMENT -->
+  <div class="bg-gradient-to-r from-cyan-900/40 via-blue-900/40 to-slate-900 border-b border-slate-800 py-2.5 px-4 text-center text-xs text-slate-300 flex items-center justify-center gap-2">
+    <span class="bg-amber-500/20 text-amber-400 font-bold px-2 py-0.5 rounded border border-amber-500/30">SPONSORED</span>
+    <span>Promote your track on <strong>Moise.com</strong> – Over 50k monthly music lovers!</span>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+    <!-- USER STATUS ALERT BANNER -->
+    <div id="status-banner" class="hidden mb-6 p-4 rounded-xl border flex items-center justify-between"></div>
+
+    <!-- VIEW 1: MEDIA FEED -->
+    <section id="view-feed" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400"></i>
+          <input type="text" id="search-input" onkeyup="filterMedia()" placeholder="Search songs, videos, artists..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500">
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+          <button onclick="setFilter('all')" class="filter-btn active bg-cyan-600 text-white px-4 py-2 rounded-xl text-xs font-semibold">All</button>
+          <button onclick="setFilter('mp3')" class="filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">MP3 Audio</button>
+          <button onclick="setFilter('mp4')" class="filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">MP4 Video</button>
+          <button onclick="setFilter('mpg')" class="filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">MPG Video</button>
+        </div>
+      </div>
+
+      <div id="media-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamic Tracks injected here -->
+      </div>
+    </section>
+
+    <!-- VIEW 2: HYPERLINKS SECTION -->
+    <section id="view-links" class="hidden space-y-6 max-w-4xl mx-auto">
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-extrabold">Music Resources & External Links</h2>
+        <p class="text-slate-400 text-sm">Explore partner music streaming networks, downloads, and official channels.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="https://spotify.com" target="_blank" rel="noopener" class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-emerald-500 transition group">
+          <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl group-hover:bg-emerald-500 group-hover:text-white transition">
+            <i class="fa-brands fa-spotify text-2xl"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-100">Spotify Global Music</h4>
+            <p class="text-xs text-slate-400">Stream millions of official tracks</p>
+          </div>
+        </a>
+
+        <a href="https://soundcloud.com" target="_blank" rel="noopener" class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-orange-500 transition group">
+          <div class="p-3 bg-orange-500/10 text-orange-400 rounded-xl group-hover:bg-orange-500 group-hover:text-white transition">
+            <i class="fa-brands fa-soundcloud text-2xl"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-100">SoundCloud Artists</h4>
+            <p class="text-xs text-slate-400">Independent beats & mixes</p>
+          </div>
+        </a>
+
+        <a href="https://youtube.com" target="_blank" rel="noopener" class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-red-500 transition group">
+          <div class="p-3 bg-red-500/10 text-red-400 rounded-xl group-hover:bg-red-500 group-hover:text-white transition">
+            <i class="fa-brands fa-youtube text-2xl"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-100">YouTube Music Videos</h4>
+            <p class="text-xs text-slate-400">Official music videos & clips</p>
+          </div>
+        </a>
+
+        <a href="https://audiomack.com" target="_blank" rel="noopener" class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-amber-500 transition group">
+          <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl group-hover:bg-amber-500 group-hover:text-white transition">
+            <i class="fa-solid fa-bolt text-2xl"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-100">Audiomack Downloads</h4>
+            <p class="text-xs text-slate-400">Afrobeats & Hip Hop trends</p>
+          </div>
+        </a>
+
+        <a href="https://apple.com/music" target="_blank" rel="noopener" class="flex items-center gap-4 bg-slate-900 border border-slate-800 p-4 rounded-xl hover:border-rose-500 transition group sm:col-span-2">
+          <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl group-hover:bg-rose-500 group-hover:text-white transition">
+            <i class="fa-brands fa-apple text-2xl"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-100">Apple Music Lossless</h4>
+            <p class="text-xs text-slate-400">Studio quality spatial audio streaming</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- VIEW 3: FAVORITES VIEW -->
+    <section id="view-favorites" class="hidden space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-100 flex items-center gap-2">
+            <i class="fa-solid fa-heart text-rose-500"></i> My Liked Tracks
+          </h2>
+          <p class="text-slate-400 text-xs">Collection of your saved favorites on Moise.com</p>
+        </div>
+        <button onclick="switchTab('feed')" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-slate-200">
+          Browse More Media
+        </button>
+      </div>
+
+      <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Liked items render here -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: SPECIALIZED ADMIN DASHBOARD -->
+    <section id="view-admin" class="hidden space-y-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-lg border border-amber-500/40">ADMINISTRATOR</span>
+            <h2 class="text-3xl font-black text-slate-100">Executive Control Center</h2>
+          </div>
+          <p class="text-slate-400 text-xs mt-1">Manage track publishing, user account approvals, platform traffic, and audit logs.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="switchTab('feed')" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-slate-200 border border-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-eye"></i> View Live Site
+          </button>
+        </div>
+      </div>
+
+      <!-- METRICS GRID -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div class="flex justify-between items-start text-cyan-400">
+            <span class="text-slate-400 text-xs font-medium">Total Registered Users</span>
+            <i class="fa-solid fa-users text-lg"></i>
+          </div>
+          <p id="metric-users" class="text-3xl font-black mt-2 text-cyan-400">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div class="flex justify-between items-start text-amber-400">
+            <span class="text-slate-400 text-xs font-medium">Pending Approvals</span>
+            <i class="fa-solid fa-clock text-lg"></i>
+          </div>
+          <p id="metric-pending" class="text-3xl font-black mt-2 text-amber-400">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div class="flex justify-between items-start text-emerald-400">
+            <span class="text-slate-400 text-xs font-medium">Platform Downloads</span>
+            <i class="fa-solid fa-download text-lg"></i>
+          </div>
+          <p id="metric-downloads" class="text-3xl font-black mt-2 text-emerald-400">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 rounded-2xl shadow-xl">
+          <div class="flex justify-between items-start text-blue-400">
+            <span class="text-slate-400 text-xs font-medium">Published Tracks</span>
+            <i class="fa-solid fa-compact-disc text-lg"></i>
+          </div>
+          <p id="metric-tracks" class="text-3xl font-black mt-2 text-blue-400">0</p>
+        </div>
+      </div>
+
+      <!-- SPECIALIZED ADMIN TABS & ACTIONS -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- LEFT 2 COLUMNS: USER APPROVAL TABLE -->
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+          <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+            <div>
+              <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-user-shield text-amber-400"></i> Account Approvals
+              </h3>
+              <p class="text-xs text-slate-400">Approve or suspend member access</p>
+            </div>
+            <span class="text-[11px] bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2.5 py-1 rounded-full font-semibold">Moderation Active</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-950 text-slate-400 uppercase">
+                <tr>
+                  <th class="p-3">User Details</th>
+                  <th class="p-3">Contact</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-user-table-body" class="divide-y divide-slate-800">
+                <!-- Dynamic User Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT 1 COLUMN: TRACK PUBLISHER FORM -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="border-b border-slate-800 pb-3 mb-4">
+              <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publish New Track
+              </h3>
+              <p class="text-xs text-slate-400">Upload songs or videos directly to the main feed</p>
+            </div>
+
+            <form onsubmit="handleAdminUploadTrack(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Track Title *</label>
+                <input type="text" id="admin-track-title" required placeholder="e.g. Kigali Beat Vol 2" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyan-500">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Artist Name *</label>
+                <input type="text" id="admin-track-artist" required placeholder="e.g. DJ Moise" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyan-500">
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Genre *</label>
+                  <select id="admin-track-genre" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200">
+                    <option value="Afrobeats">Afrobeats</option>
+                    <option value="Dancehall">Dancehall</option>
+                    <option value="Hip Hop">Hip Hop</option>
+                    <option value="R&B">R&B</option>
+                    <option value="Gospel">Gospel</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Format *</label>
+                  <select id="admin-track-format" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200">
+                    <option value="mp3">Audio (.MP3)</option>
+                    <option value="mp4">Video (.MP4)</option>
+                    <option value="mpg">Video (.MPG)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Cover Image URL</label>
+                <input type="url" id="admin-track-cover" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyan-500">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Audio/Media File URL *</label>
+                <input type="url" id="admin-track-url" required placeholder="https://www.soundhelix.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyan-500">
+              </div>
+
+              <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 mt-2">
+                <i class="fa-solid fa-plus"></i> Add to Live Platform
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- SYSTEM LOGS AUDIT TRAIL -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-3 shadow-xl">
+        <h3 class="font-bold text-sm text-slate-300 uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-cyan-400"></i> Platform Audit Log
+        </h3>
+        <div id="admin-log-container" class="bg-slate-950 rounded-xl p-4 border border-slate-800 text-xs font-mono space-y-2 max-h-40 overflow-y-auto text-slate-400">
+          <!-- Dynamic Logs -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- DEVELOPER FOOTER PROFILE -->
+  <footer class="bg-slate-900 border-t border-slate-800 py-6 px-4 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <!-- Verified local image link -->
+        <img src="299534.jpg" alt="Tuyizere Moise" class="w-12 h-12 rounded-full object-cover border-2 border-cyan-500 shadow-md">
+        <div>
+          <h4 class="font-bold text-sm text-slate-100 flex items-center gap-1.5">
+            Tuyizere Moise <span class="bg-cyan-500/20 text-cyan-400 text-[10px] px-2 py-0.5 rounded border border-cyan-500/30">Website Developer</span>
+          </h4>
+          <p class="text-xs text-slate-400 flex items-center gap-3 mt-1">
+            <span><i class="fa-solid fa-envelope text-cyan-400 mr-1"></i> tmoise003@gmail.com</span>
+            <span><i class="fa-solid fa-phone text-emerald-400 mr-1"></i> 0786171184</span>
+          </p>
+        </div>
+      </div>
+      <div class="text-xs text-slate-500 text-center sm:text-right">
+        <p>&copy; 2026 Moise.com. All rights reserved.</p>
+        <p class="text-[11px] text-slate-400 mt-0.5">Designed & Developed with precision.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- DOWNLOAD CHOOSER MODAL -->
+  <div id="modal-download" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
+          <i class="fa-solid fa-file-arrow-down text-cyan-400"></i> Download Media File
+        </h3>
+        <button onclick="closeDownloadModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Select Output Format</label>
+          <select id="dl-format" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
+            <option value="mp3">Audio (.MP3)</option>
+            <option value="mp4">Video (.MP4)</option>
+            <option value="mpg">Video (.MPG)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Select Quality / Bitrate</label>
+          <select id="dl-quality" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
+            <option value="320">320 kbps (High Definition Audio)</option>
+            <option value="128">128 kbps (Standard Quality)</option>
+            <option value="1080">1080p Full HD Video</option>
+            <option value="720">720p HD Video</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button onclick="closeDownloadModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:bg-slate-800">Cancel</button>
+        <button onclick="executeCustomDownload()" class="bg-cyan-600 hover:bg-cyan-500 px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-lg shadow-cyan-500/20">
+          Save File to Device
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARE MODAL -->
+  <div id="modal-share" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+          <i class="fa-solid fa-share-nodes text-cyan-400"></i> Share Track
+        </h3>
+        <button onclick="closeShareModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-3">
+        <p id="share-track-title" class="text-xs text-slate-300 font-bold truncate text-center"></p>
+
+        <div class="grid grid-cols-3 gap-3 pt-2">
+          <button onclick="shareSocial('whatsapp')" class="flex flex-col items-center justify-center p-3 bg-emerald-950/40 border border-emerald-800/50 rounded-xl text-emerald-400 hover:bg-emerald-900/50 transition">
+            <i class="fa-brands fa-whatsapp text-2xl mb-1"></i>
+            <span class="text-[10px] font-bold">WhatsApp</span>
+          </button>
+          <button onclick="shareSocial('twitter')" class="flex flex-col items-center justify-center p-3 bg-sky-950/40 border border-sky-800/50 rounded-xl text-sky-400 hover:bg-sky-900/50 transition">
+            <i class="fa-brands fa-x-twitter text-2xl mb-1"></i>
+            <span class="text-[10px] font-bold">Twitter</span>
+          </button>
+          <button onclick="shareSocial('facebook')" class="flex flex-col items-center justify-center p-3 bg-blue-950/40 border border-blue-800/50 rounded-xl text-blue-400 hover:bg-blue-900/50 transition">
+            <i class="fa-brands fa-facebook text-2xl mb-1"></i>
+            <span class="text-[10px] font-bold">Facebook</span>
+          </button>
+        </div>
+
+        <div class="pt-2">
+          <label class="block text-[10px] text-slate-400 mb-1">Direct Link</label>
+          <div class="flex gap-2">
+            <input type="text" id="share-link-input" readonly class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-400 font-mono">
+            <button onclick="copyShareLink()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-3 rounded-xl transition">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div id="modal-auth" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-6 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 id="auth-modal-title" class="font-bold text-lg text-slate-100">Sign In to Moise.com</h3>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div id="auth-tabs-container" class="grid grid-cols-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold text-center">
+        <button type="button" id="tab-signin-btn" onclick="setAuthMode('signin')" class="py-2 rounded-lg bg-cyan-600 text-white transition">Sign In</button>
+        <button type="button" id="tab-signup-btn" onclick="setAuthMode('signup')" class="py-2 rounded-lg text-slate-400 hover:text-white transition">Create Account</button>
+      </div>
+
+      <!-- SIGN IN FORM -->
+      <form id="form-signin" onsubmit="handleSignInSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Email Address *</label>
+          <input type="email" id="signin-email" required placeholder="tmoise003@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-xs text-slate-300 font-medium">Password *</label>
+            <button type="button" onclick="setAuthMode('forgot')" class="text-[11px] text-cyan-400 hover:underline font-semibold">Forgot password?</button>
+          </div>
+          <input type="password" id="signin-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+
+        <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 py-3 rounded-xl font-bold text-sm text-white shadow-lg shadow-cyan-500/20 transition">
+          Sign In to Account
+        </button>
+      </form>
+
+      <!-- SIGN UP FORM -->
+      <form id="form-signup" onsubmit="handleSignUpSubmit(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Full Name *</label>
+          <input type="text" id="signup-name" required placeholder="Moise Tuyizere" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Email Address *</label>
+          <input type="email" id="signup-email" required placeholder="name@example.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Phone Number (Active Check Required) *</label>
+          <input type="tel" id="signup-phone" required placeholder="+250 780 000 000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Profile Picture URL (Optional)</label>
+          <input type="url" id="signup-avatar" placeholder="https://images.unsplash.com/photo-..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Create Password *</label>
+          <input type="password" id="signup-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+
+        <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 py-3 rounded-xl font-bold text-sm text-white shadow-lg shadow-cyan-500/20 transition">
+          Complete Registration
+        </button>
+      </form>
+
+      <!-- FORGOT PASSWORD FORM -->
+      <form id="form-forgot" onsubmit="handleForgotSubmit(event)" class="space-y-4 hidden">
+        <div class="bg-cyan-950/40 border border-cyan-800/60 p-3.5 rounded-xl text-xs text-slate-300 space-y-1.5">
+          <p class="font-bold text-cyan-400 flex items-center gap-1.5"><i class="fa-solid fa-envelope"></i> Password Recovery</p>
+          <p>Enter your registered account email below to receive a reset code.</p>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Account Email Address *</label>
+          <input type="email" id="forgot-email" required placeholder="name@example.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+        <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 py-3 rounded-xl font-bold text-sm text-white transition">Send Reset Code</button>
+      </form>
+
+      <!-- VERIFY RESET FORM -->
+      <form id="form-verify-reset" onsubmit="handleVerifyResetSubmit(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">6-Digit Code *</label>
+          <input type="text" id="verify-code" required maxlength="6" placeholder="123456" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm font-mono tracking-widest text-center text-cyan-300 focus:outline-none focus:border-cyan-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">New Password *</label>
+          <input type="password" id="verify-new-password" required placeholder="New password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold text-sm text-white transition">Confirm Password Reset</button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- PROFILE VIEW & EDIT MODAL (1-WEEK COOLDOWN & PICTURE UPLOADER) -->
+  <div id="modal-profile" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-6 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-lg text-slate-100 flex items-center gap-2">
+          <i class="fa-solid fa-user-gear text-cyan-400"></i> My User Profile
+        </h3>
+        <button onclick="closeProfileModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="bg-amber-950/30 border border-amber-800/50 p-3 rounded-xl text-xs text-amber-300 flex items-start gap-2">
+        <i class="fa-solid fa-triangle-exclamation text-sm mt-0.5"></i>
+        <p><strong>Security Rule:</strong> Profile details can only be edited once every <strong>7 days</strong>.</p>
+      </div>
+
+      <form onsubmit="handleProfileUpdateSubmit(event)" class="space-y-4">
+        <div class="flex flex-col items-center space-y-2">
+          <div class="relative group">
+            <img id="profile-preview-img" src="" class="w-20 h-20 rounded-full object-cover border-2 border-cyan-500 shadow-lg">
+          </div>
+          <span class="text-[11px] text-slate-400">Profile Picture Preview</span>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Profile Picture URL *</label>
+          <input type="url" id="profile-avatar" required oninput="document.getElementById('profile-preview-img').src = this.value" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Full Name *</label>
+          <input type="text" id="profile-name" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Email Address (Read-Only)</label>
+          <input type="email" id="profile-email" readonly class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-400 cursor-not-allowed">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Phone Number (Active Checked) *</label>
+          <input type="tel" id="profile-phone" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 text-slate-100">
+        </div>
+
+        <div id="profile-cooldown-notice" class="text-[11px] font-mono text-center"></div>
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button type="button" onclick="closeProfileModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:bg-slate-800">Cancel</button>
+          <button type="submit" id="profile-save-btn" class="bg-cyan-600 hover:bg-cyan-500 px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-lg shadow-cyan-500/20">
+            Save Profile Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- EMAIL NOTIFICATION TOAST -->
+  <div id="simulated-email-toast" class="fixed bottom-28 right-6 bg-slate-900 border border-cyan-500/50 shadow-2xl rounded-2xl p-4 max-w-sm z-50 hidden space-y-2 animate-bounce">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+      <div class="flex items-center gap-2 text-cyan-400 text-xs font-bold">
+        <i class="fa-solid fa-envelope-open-text text-base"></i>
+        <span>Incoming Email Simulation</span>
+      </div>
+      <button onclick="document.getElementById('simulated-email-toast').classList.add('hidden')" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="text-xs space-y-1 text-slate-300">
+      <p><strong>From:</strong> security@moise.com</p>
+      <p id="email-toast-body" class="bg-slate-950 p-2 rounded border border-slate-800 font-mono text-cyan-300 text-[11px]"></p>
+    </div>
+  </div>
+
+  <!-- PERSISTENT BOTTOM PLAYER -->
+  <div id="sticky-player" class="bg-slate-900 border-t border-slate-800 fixed bottom-0 left-0 right-0 p-3 z-30 flex items-center justify-between">
+    <div class="flex items-center space-x-3 w-1/3">
+      <img id="player-img" src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100" class="w-10 h-10 rounded-lg object-cover">
+      <div class="truncate">
+        <p id="player-title" class="text-xs font-bold truncate">Select a track</p>
+        <p id="player-artist" class="text-[10px] text-slate-400 truncate">Moise.com Player</p>
+      </div>
+    </div>
+    <audio id="global-audio-element" controls class="w-1/2 h-8"></audio>
+  </div>
+
+  <!-- APPLICATION LOGIC -->
+  <script>
+    let currentUser = null;
+    let targetDownloadTrack = null;
+    let targetShareTrack = null;
+    let currentFilter = 'all';
+
+    let activeResetSession = { email: '', code: '', expires: 0 };
+
+    let tracks = [
+      { id: 1, title: 'Summer Vibes Afro', artist: 'Moise Sound', genre: 'Afrobeats', downloads: 1420, likes: 234, cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500', audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', format: 'mp3' },
+      { id: 2, title: 'Kigali Night Groove', artist: 'DJ Moses', genre: 'Dancehall', downloads: 890, likes: 156, cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500', audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', format: 'mp3' },
+      { id: 3, title: 'Urban Beats Vol 1', artist: 'Producer Moise', genre: 'Hip Hop', downloads: 2100, likes: 412, cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500', audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', format: 'mp4' }
+    ];
+
+    let users = [
+      { id: 'usr1', name: 'Moise Administrator', email: 'tmoise003@gmail.com', password: 'Tuyizere@12A', phone: '+250 788 111 222', avatar: '299534.jpg', status: 'approved', role: 'admin', lastProfileUpdate: 0 }
+    ];
+
+    let userFavorites = new Set();
+    let auditLogs = ["System initialized successfully.", "Administrator profile loaded."];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAuthNav();
+      renderTracks();
+      renderAdminUsers();
+      renderLogs();
+      updateMetrics();
+    });
+
+    function logAction(msg) {
+      auditLogs.unshift(`[${new Date().toLocaleTimeString()}] ${msg}`);
+      renderLogs();
+    }
+
+    function renderLogs() {
+      const container = document.getElementById('admin-log-container');
+      if (!container) return;
+      container.innerHTML = auditLogs.map(l => `<p class="border-b border-slate-900 pb-1">⚡ ${l}</p>`).join('');
+    }
+
+    function switchTab(tabId) {
+      document.getElementById('view-feed').classList.toggle('hidden', tabId !== 'feed');
+      document.getElementById('view-links').classList.toggle('hidden', tabId !== 'links');
+      document.getElementById('view-favorites').classList.toggle('hidden', tabId !== 'favorites');
+      document.getElementById('view-admin').classList.toggle('hidden', tabId !== 'admin');
+      if (tabId === 'favorites') renderFavorites();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setFilter(fmt) {
+      currentFilter = fmt;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-600', 'text-white');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
+      });
+      event.target.classList.remove('bg-slate-800', 'text-slate-300');
+      event.target.classList.add('bg-cyan-600', 'text-white');
+      renderTracks();
+    }
+
+    function filterMedia() { renderTracks(); }
+
+    function renderTracks() {
+      const grid = document.getElementById('media-grid');
+      const searchVal = document.getElementById('search-input')?.value.toLowerCase() || '';
+
+      const filtered = tracks.filter(t => {
+        const matchesFilter = currentFilter === 'all' || t.format === currentFilter;
+        const matchesSearch = t.title.toLowerCase().includes(searchVal) || t.artist.toLowerCase().includes(searchVal) || t.genre.toLowerCase().includes(searchVal);
+        return matchesFilter && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-3 text-center py-12 text-slate-500 text-sm">No media tracks found matching your search.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(t => {
+        const isLiked = userFavorites.has(t.id);
+        return `
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col hover:border-slate-700 transition">
+          <div class="relative">
+            <img src="${t.cover}" class="h-44 w-full object-cover">
+            <button onclick="toggleFavorite(${t.id})" class="absolute top-3 right-3 p-2.5 rounded-xl bg-slate-950/70 text-slate-200 hover:text-rose-500 backdrop-blur-md transition">
+              <i class="${isLiked ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart"></i>
+            </button>
+          </div>
+          <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">${t.genre}</span>
+                <span class="text-xs text-slate-400"><i class="fa-solid fa-download"></i> ${t.downloads} &nbsp; <i class="fa-solid fa-heart text-rose-500/70"></i> ${t.likes}</span>
+              </div>
+              <h3 class="font-bold text-base mt-2 text-slate-100">${t.title}</h3>
+              <p class="text-xs text-slate-400">${t.artist}</p>
+            </div>
+            <div class="space-y-2 pt-2 border-t border-slate-800">
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="playTrack('${t.title}', '${t.artist}', '${t.cover}', '${t.audioUrl}')" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 text-slate-200">
+                  <i class="fa-solid fa-play text-cyan-400"></i> Stream
+                </button>
+                <button onclick="openShareModal(${t.id})" class="bg-slate-800 hover:bg-slate-700 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 text-slate-200">
+                  <i class="fa-solid fa-share-nodes text-emerald-400"></i> Share
+                </button>
+              </div>
+              <button onclick="openDownloadModal(${t.id})" class="w-full bg-cyan-600 hover:bg-cyan-500 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-white">
+                <i class="fa-solid fa-download"></i> Download Options
+              </button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderFavorites() {
+      const grid = document.getElementById('favorites-grid');
+      const likedTracks = tracks.filter(t => userFavorites.has(t.id));
+      if (likedTracks.length === 0) {
+        grid.innerHTML = `<div class="col-span-3 text-center py-12 text-slate-500 text-sm">No liked tracks saved yet.</div>`;
+        return;
+      }
+      grid.innerHTML = likedTracks.map(t => `
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col">
+          <img src="${t.cover}" class="h-44 w-full object-cover">
+          <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+            <div>
+              <h3 class="font-bold text-base mt-2">${t.title}</h3>
+              <p class="text-xs text-slate-400">${t.artist}</p>
+            </div>
+            <button onclick="toggleFavorite(${t.id}); renderFavorites();" class="w-full bg-slate-800 hover:bg-rose-950 text-rose-500 py-2 rounded-xl text-xs font-bold">Remove Liked Track</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function toggleFavorite(trackId) {
+      if (!currentUser) { openAuthModal('signin'); showBanner('Please sign in first.', 'amber'); return; }
+      const track = tracks.find(t => t.id === trackId);
+      if (userFavorites.has(trackId)) { userFavorites.delete(trackId); if(track) track.likes--; }
+      else { userFavorites.add(trackId); if(track) track.likes++; }
+      renderTracks();
+    }
+
+    function playTrack(title, artist, cover, url) {
+      document.getElementById('player-title').innerText = title;
+      document.getElementById('player-artist').innerText = artist;
+      document.getElementById('player-img').src = cover;
+      const audio = document.getElementById('global-audio-element');
+      audio.src = url;
+      audio.play();
+    }
+
+    function renderAuthNav() {
+      const container = document.getElementById('auth-nav-container');
+      const adminNavBtn = document.getElementById('nav-admin');
+      const favsNavBtn = document.getElementById('nav-favs');
+
+      if (currentUser) {
+        container.innerHTML = `
+          <button onclick="openProfileModal()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-1.5 rounded-xl transition cursor-pointer">
+            <img src="${currentUser.avatar || '299534.jpg'}" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs font-bold text-slate-200">${currentUser.name}</span>
+          </button>
+          <button onclick="logout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 text-slate-300">Logout</button>
+        `;
+        favsNavBtn.classList.remove('hidden');
+        if (currentUser.role === 'admin') adminNavBtn.classList.remove('hidden');
+        else adminNavBtn.classList.add('hidden');
+      } else {
+        container.innerHTML = `
+          <button onclick="openAuthModal('signin')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3.5 py-2 rounded-xl border border-slate-700">Sign In</button>
+          <button onclick="openAuthModal('signup')" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3.5 py-2 rounded-xl shadow-lg shadow-cyan-500/20">Sign Up</button>
+        `;
+        adminNavBtn.classList.add('hidden');
+        favsNavBtn.classList.add('hidden');
+      }
+    }
+
+    function setAuthMode(mode) {
+      document.getElementById('form-signin').classList.add('hidden');
+      document.getElementById('form-signup').classList.add('hidden');
+      document.getElementById('form-forgot').classList.add('hidden');
+      document.getElementById('form-verify-reset').classList.add('hidden');
+      document.getElementById('auth-tabs-container').classList.toggle('hidden', mode === 'forgot' || mode === 'verify-reset');
+
+      if (mode === 'signin') {
+        document.getElementById('auth-modal-title').innerText = 'Sign In to Moise.com';
+        document.getElementById('form-signin').classList.remove('hidden');
+      } else if (mode === 'signup') {
+        document.getElementById('auth-modal-title').innerText = 'Create Account';
+        document.getElementById('form-signup').classList.remove('hidden');
+      } else if (mode === 'forgot') {
+        document.getElementById('auth-modal-title').innerText = 'Reset Password';
+        document.getElementById('form-forgot').classList.remove('hidden');
+      } else if (mode === 'verify-reset') {
+        document.getElementById('auth-modal-title').innerText = 'Confirm Reset Code';
+        document.getElementById('form-verify-reset').classList.remove('hidden');
+      }
+    }
+
+    function openAuthModal(mode = 'signin') { setAuthMode(mode); document.getElementById('modal-auth').classList.remove('hidden'); }
+    function closeAuthModal() { document.getElementById('modal-auth').classList.add('hidden'); }
+
+    // USER PROFILE VIEW & 1-WEEK COOLDOWN MANAGEMENT
+    function openProfileModal() {
+      if (!currentUser) return;
+      document.getElementById('profile-name').value = currentUser.name;
+      document.getElementById('profile-email').value = currentUser.email;
+      document.getElementById('profile-phone').value = currentUser.phone || '';
+      document.getElementById('profile-avatar').value = currentUser.avatar || '';
+      document.getElementById('profile-preview-img').src = currentUser.avatar || '299534.jpg';
+
+      const cooldownNotice = document.getElementById('profile-cooldown-notice');
+      const saveBtn = document.getElementById('profile-save-btn');
+      const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+      const timeElapsed = Date.now() - (currentUser.lastProfileUpdate || 0);
+
+      if (timeElapsed < ONE_WEEK_MS) {
+        const timeLeftDays = Math.ceil((ONE_WEEK_MS - timeElapsed) / (1000 * 60 * 60 * 24));
+        cooldownNotice.innerHTML = `⚠️ Cooldown Active: Profile changes locked for another <strong>${timeLeftDays} day(s)</strong>.`;
+        cooldownNotice.className = 'text-[11px] text-amber-400 font-mono text-center';
+        saveBtn.disabled = true;
+        saveBtn.className = 'bg-slate-800 text-slate-500 px-5 py-2.5 rounded-xl text-xs font-bold cursor-not-allowed';
+      } else {
+        cooldownNotice.innerHTML = `✅ Profile is fully editable.`;
+        cooldownNotice.className = 'text-[11px] text-emerald-400 font-mono text-center';
+        saveBtn.disabled = false;
+        saveBtn.className = 'bg-cyan-600 hover:bg-cyan-500 px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-lg shadow-cyan-500/20';
+      }
+      document.getElementById('modal-profile').classList.remove('hidden');
+    }
+
+    function closeProfileModal() { document.getElementById('modal-profile').classList.add('hidden'); }
+
+    function handleProfileUpdateSubmit(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+      if (Date.now() - (currentUser.lastProfileUpdate || 0) < ONE_WEEK_MS) {
+        alert('❌ Update Denied: You must wait 1 week between profile updates.');
+        return;
+      }
+
+      const newName = document.getElementById('profile-name').value.trim();
+      const newPhone = document.getElementById('profile-phone').value.trim();
+      const newAvatar = document.getElementById('profile-avatar').value.trim();
+
+      const phoneRegex = /^(\+?[1-9]\d{1,14}|\+?250\d{9}|07[238]\d{7})$/;
+      if (!phoneRegex.test(newPhone)) {
+        alert('❌ Invalid or inactive phone number format.');
+        return;
+      }
+
+      currentUser.name = newName;
+      currentUser.phone = newPhone;
+      currentUser.avatar = newAvatar || currentUser.avatar;
+      currentUser.lastProfileUpdate = Date.now();
+
+      let uIdx = users.findIndex(u => u.id === currentUser.id);
+      if (uIdx !== -1) users[uIdx] = currentUser;
+
+      logAction(`Profile updated by: ${currentUser.email}`);
+      renderAuthNav();
+      renderAdminUsers();
+      closeProfileModal();
+      showBanner('Profile changes saved successfully!', 'emerald');
+    }
+
+    function handleSignInSubmit(e) {
+      e.preventDefault();
+      const emailVal = document.getElementById('signin-email').value.trim().toLowerCase();
+      const passVal = document.getElementById('signin-password').value;
+
+      let existing = users.find(u => u.email.toLowerCase() === emailVal);
+      if (existing) {
+        if (existing.password !== passVal) { alert('Incorrect password.'); return; }
+        currentUser = existing;
+        closeAuthModal();
+        renderAuthNav();
+        renderAdminUsers();
+        updateMetrics();
+        logAction(`User logged in: ${currentUser.email}`);
+        showBanner(`Welcome back, ${currentUser.name}!`, 'emerald');
+        if (currentUser.role === 'admin') switchTab('admin');
+        else switchTab('feed');
+      } else {
+        alert('Account not found. Please create an account first.');
+      }
+    }
+
+    function handleSignUpSubmit(e) {
+      e.preventDefault();
+      const emailVal = document.getElementById('signup-email').value.trim().toLowerCase();
+      const nameVal = document.getElementById('signup-name').value;
+      const phoneVal = document.getElementById('signup-phone').value.trim();
+      const avatarVal = document.getElementById('signup-avatar').value.trim();
+      const passVal = document.getElementById('signup-password').value;
+
+      const phoneRegex = /^(\+?[1-9]\d{1,14}|\+?250\d{9}|07[238]\d{7})$/;
+      if (!phoneRegex.test(phoneVal)) {
+        alert('❌ Registration Denied: Inactive or malformed phone number.');
+        return;
+      }
+
+      if (users.some(u => u.phone === phoneVal)) {
+        alert('❌ Registration Denied: Phone number already linked to an account.');
+        return;
+      }
+
+      const newUser = {
+        id: 'usr_' + Date.now(),
+        name: nameVal,
+        email: emailVal,
+        password: passVal,
+        phone: phoneVal,
+        avatar: avatarVal || '299534.jpg',
+        status: 'pending',
+        role: 'user',
+        lastProfileUpdate: 0
+      };
+      users.push(newUser);
+      renderAdminUsers();
+      updateMetrics();
+      logAction(`New registration: ${newUser.email}`);
+      setAuthMode('signin');
+      document.getElementById('signin-email').value = emailVal;
+      showBanner('Registration complete! Please sign in.', 'emerald');
+    }
+
+    function handleForgotSubmit(e) {
+      e.preventDefault();
+      const emailVal = document.getElementById('forgot-email').value.trim().toLowerCase();
+      const existing = users.find(u => u.email.toLowerCase() === emailVal);
+      if (existing) {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        activeResetSession = { email: emailVal, code, expires: Date.now() + 15*60*1000 };
+        document.getElementById('email-toast-body').innerHTML = `Your 6-digit password reset code is: <strong>${code}</strong>`;
+        document.getElementById('simulated-email-toast').classList.remove('hidden');
+        setAuthMode('verify-reset');
+        showBanner(`Reset code sent to ${emailVal}`, 'emerald');
+      } else {
+        alert('Email not found.');
+      }
+    }
+
+    function handleVerifyResetSubmit(e) {
+      e.preventDefault();
+      const code = document.getElementById('verify-code').value.trim();
+      const newPass = document.getElementById('verify-new-password').value;
+
+      if (Date.now() > activeResetSession.expires) { alert('Reset code expired.'); return; }
+      if (code !== activeResetSession.code) { alert('Invalid reset code.'); return; }
+
+      const user = users.find(u => u.email.toLowerCase() === activeResetSession.email);
+      if (user) {
+        user.password = newPass;
+        alert('Password updated successfully!');
+        document.getElementById('simulated-email-toast').classList.add('hidden');
+        setAuthMode('signin');
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      renderAuthNav();
+      switchTab('feed');
+      showBanner('Logged out successfully.', 'emerald');
+    }
+
+    function showBanner(msg, type) {
+      const b = document.getElementById('status-banner');
+      b.className = `mb-6 p-4 rounded-xl border flex items-center justify-between ${type === 'amber' ? 'bg-amber-950/40 border-amber-800 text-amber-300' : 'bg-emerald-950/40 border-emerald-800 text-emerald-300'}`;
+      b.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.classList.add('hidden')" class="text-xs underline font-bold">Dismiss</button>`;
+      b.classList.remove('hidden');
+    }
+
+    function openDownloadModal(trackId) {
+      if (!currentUser) { openAuthModal('signin'); showBanner('Please sign in to download tracks.', 'amber'); return; }
+      if (currentUser.status !== 'approved') { alert('Account pending approval.'); return; }
+      targetDownloadTrack = tracks.find(t => t.id === trackId);
+      document.getElementById('modal-download').classList.remove('hidden');
+    }
+    function closeDownloadModal() { document.getElementById('modal-download').classList.add('hidden'); }
+
+    async function executeCustomDownload() {
+      if (!targetDownloadTrack) return;
+      const fmt = document.getElementById('dl-format').value;
+      const filename = `${targetDownloadTrack.title}.${fmt}`;
+      targetDownloadTrack.downloads++;
+      renderTracks();
+      updateMetrics();
+      
+      const a = document.createElement('a');
+      a.href = targetDownloadTrack.audioUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      closeDownloadModal();
+    }
+
+    function openShareModal(trackId) {
+      targetShareTrack = tracks.find(t => t.id === trackId);
+      document.getElementById('share-track-title').innerText = `${targetShareTrack.title} - ${targetShareTrack.artist}`;
+      document.getElementById('share-link-input').value = window.location.href;
+      document.getElementById('modal-share').classList.remove('hidden');
+    }
+    function closeShareModal() { document.getElementById('modal-share').classList.add('hidden'); }
+    function copyShareLink() { navigator.clipboard.writeText(document.getElementById('share-link-input').value); alert('Link copied!'); closeShareModal(); }
+
+    function handleAdminUploadTrack(e) {
+      e.preventDefault();
+      const nt = {
+        id: Date.now(),
+        title: document.getElementById('admin-track-title').value,
+        artist: document.getElementById('admin-track-artist').value,
+        genre: document.getElementById('admin-track-genre').value,
+        format: document.getElementById('admin-track-format').value,
+        downloads: 0, likes: 0,
+        cover: document.getElementById('admin-track-cover').value || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500',
+        audioUrl: document.getElementById('admin-track-url').value
+      };
+      tracks.unshift(nt);
+      renderTracks();
+      updateMetrics();
+      logAction(`Track uploaded: "${nt.title}"`);
+      alert('Track published successfully!');
+      e.target.reset();
+    }
+
+    function renderAdminUsers() {
+      const body = document.getElementById('admin-user-table-body');
+      if (!body) return;
+      body.innerHTML = users.map(u => `
+        <tr>
+          <td class="p-3 flex items-center gap-2">
+            <img src="${u.avatar}" class="w-8 h-8 rounded-full object-cover">
+            <div><p class="font-bold text-slate-200">${u.name}</p><p class="text-[10px] text-slate-400 capitalize">${u.role}</p></div>
+          </td>
+          <td class="p-3">${u.email}<br>${u.phone}</td>
+          <td class="p-3"><span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase ${u.status === 'approved' ? 'bg-emerald-950 text-emerald-400' : 'bg-amber-950 text-amber-400'}">${u.status}</span></td>
+          <td class="p-3 text-right">
+            ${u.status === 'pending' ? `<button onclick="approveUser('${u.id}')" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded-xl text-white font-bold text-[10px]">Approve</button>` : '<span class="text-xs text-emerald-400 font-semibold">Active</span>'}
+          </td>
+        </tr>`).join('');
+    }
+
+    function approveUser(id) {
+      const u = users.find(x => x.id === id);
+      if (u) { u.status = 'approved'; renderAdminUsers(); updateMetrics(); logAction(`User approved: ${u.email}`); showBanner(`Approved ${u.name}`, 'emerald'); }
+    }
+
+    function updateMetrics() {
+      document.getElementById('metric-users').innerText = users.length;
+      document.getElementById('metric-pending').innerText = users.filter(u => u.status === 'pending').length;
+      document.getElementById('metric-downloads').innerText = tracks.reduce((a, b) => a + b.downloads, 0);
+      document.getElementById('metric-tracks').innerText = tracks.length;
+    }
+  </script>
+</body>
+</html>
